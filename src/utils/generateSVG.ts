@@ -1,8 +1,8 @@
-import type { PlanterConfig, Parts, BoxConfig, SVGDiagram } from '../types';
+import type { PlanterConfig, Parts, ComputedBoxConfig, SVGDiagram } from '../types';
 
 interface DiagramConfig extends PlanterConfig {
   parts: Parts;
-  box: BoxConfig & { panelRows: number };
+  box: ComputedBoxConfig;
 }
 
 export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
@@ -204,23 +204,23 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
       // BOTTOM VIEW (SLATS)
       {
         elements: [
-          // Frame outline (dashed)
+          // Frame outline (dashed) - shows interior dimensions
           {
             type: 'rect',
             x: 510,
             y: 90,
-            width: slatLength,
-            height: slatLength,
+            width: box.interiorLength * scale,
+            height: box.interiorWidth * scale,
             fill: 'none',
             stroke: '#aaa',
             strokeWidth: 2,
             strokeDasharray: '6,4'
           },
-          // Bottom slats
+          // Bottom slats - arranged across the width
           ...Array.from({ length: box.bottomSlats }, (_, i) => ({
             type: 'rect',
             x: 510,
-            y: 100 + (i * (slatHeight + slatSpacing)),
+            y: 90 + (i * (slatHeight + slatSpacing)),
             width: slatLength,
             height: slatHeight,
             fill: '#fff1cf',
@@ -231,7 +231,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
           {
             type: 'text',
             x: 510 + (slatLength / 2) - 5,
-            y: 100 + slatHeight - 2,
+            y: 90 + slatHeight - 2,
             fontSize: 19,
             fill: '#7d5a3a',
             fontWeight: 'bold',
@@ -240,7 +240,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
           {
             type: 'text',
             x: 520,
-            y: 85,
+            y: 80,
             fontSize: 14,
             fill: '#444',
             content: 'Bottom View (Slats)'

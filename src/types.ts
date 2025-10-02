@@ -6,7 +6,12 @@ export interface BoxConfig {
   hasTopRim: boolean;
   topRimWidth: number;
   bottomSlats?: number; // Optional - will be auto-calculated if not provided
-  panelRows?: number;
+  panelRows?: number; // Auto-calculated
+}
+
+export interface ComputedBoxConfig extends BoxConfig {
+  bottomSlats: number;
+  panelRows: number;
 }
 
 export interface PlanterConfig {

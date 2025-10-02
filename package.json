@@ -2,7 +2,7 @@
   "name": "planter-box-cutlist",
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://yourusername.github.io/planter-box/",
+  "homepage": "https://robertkraig.github.io/planter-box/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

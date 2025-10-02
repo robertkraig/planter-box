@@ -24,7 +24,7 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     // Calculate bottom slat count dynamically based on interior width
     // Slats run along the length, spaced across the width
     const bottomSlatLength = box.interiorLength;
-    const bottomSlatCount = box.bottomSlats ?? Math.floor(box.interiorWidth / plankWidth);
+    const bottomSlatCount = box.bottomSlats ?? Math.ceil(box.interiorWidth / plankWidth);
     const bottomSlatGap = box.interiorWidth - (bottomSlatCount * plankWidth);
 
     const topRimLength = box.interiorLength + (box.legWidth * 2);
@@ -150,7 +150,15 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     });
 
     // Generate SVG diagram dynamically
-    const svg = generateAssemblyDiagram({ ...config, parts, box: { ...box, panelRows } });
+    const svg = generateAssemblyDiagram({ 
+      ...config, 
+      parts, 
+      box: { 
+        ...box, 
+        panelRows,
+        bottomSlats: bottomSlatCount 
+      } 
+    });
 
     return {
       ...config,
