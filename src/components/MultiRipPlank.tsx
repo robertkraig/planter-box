@@ -6,6 +6,10 @@ interface MultiRipPlankProps {
 }
 
 export function MultiRipPlank({ plank, plankLength }: MultiRipPlankProps) {
+  if (!plankLength || plankLength <= 0) {
+    return null;
+  }
+
   let totalWidth = 0;
 
   return (

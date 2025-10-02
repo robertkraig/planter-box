@@ -19,6 +19,11 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
 
     const { box, plankLength, plankWidth, sparePlanks } = config;
 
+    // Validate dimensions to prevent division by zero
+    if (!plankLength || plankLength <= 0 || !plankWidth || plankWidth <= 0) {
+      return config as ExpandedConfig;
+    }
+
     // Calculate how many plank rows fit within the box height
     const panelRows = Math.floor(box.height / plankWidth);
 

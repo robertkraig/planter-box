@@ -6,6 +6,10 @@ interface RippedPlankProps {
 }
 
 export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
+  if (!plank.strips || plank.strips.length === 0 || !plankLength || plankLength <= 0) {
+    return null;
+  }
+
   const stripHeight = `${100 / plank.strips.length}%`;
   const plankHeight = plank.strips.length * 19;
 

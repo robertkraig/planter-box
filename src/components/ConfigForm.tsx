@@ -23,14 +23,39 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
 
     // Convert to appropriate type
     if (typeof currentValue === 'number') {
-      current[lastKey] = parseFloat(value) || 0;
+      const numValue = parseFloat(value);
+      // Only update if we have a valid positive number
+      if (!isNaN(numValue) && numValue > 0) {
+        current[lastKey] = numValue;
+        onConfigChange(newConfig);
+      }
     } else if (typeof currentValue === 'boolean') {
       current[lastKey] = value === 'true';
+      onConfigChange(newConfig);
     } else {
       current[lastKey] = value;
+      onConfigChange(newConfig);
+    }
+  };
+
+  const handleFractionChange = (path: string, whole: string, fraction: string) => {
+    const newConfig = { ...config };
+    const keys = path.split('.');
+    let current = newConfig;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]];
     }
 
-    onConfigChange(newConfig);
+    const lastKey = keys[keys.length - 1];
+    const wholeNum = parseInt(whole) || 0;
+    const fracNum = parseFloat(fraction) || 0;
+    const total = wholeNum + fracNum;
+
+    if (total > 0) {
+      current[lastKey] = total;
+      onConfigChange(newConfig);
+    }
   };
 
   const renderInput = (key, value, path) => {
@@ -85,12 +110,52 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>
+         ) : typeof value === 'number' ? (
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <input
+              id={inputId}
+              type="number"
+              value={Math.floor(value)}
+              min="0"
+              onChange={(e) => {
+                const whole = e.target.value;
+                const fraction = (value - Math.floor(value)).toFixed(3);
+                handleFractionChange(path, whole, fraction);
+              }}
+              style={{
+                width: '60%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+                fontSize: '14px',
+              }}
+            />
+            <span style={{ fontSize: '14px', color: '#555' }}>"</span>
+            <input
+              type="number"
+              value={((value - Math.floor(value)) * 1).toFixed(3).replace(/\.?0+$/, '')}
+              min="0"
+              max="0.99"
+              step="0.125"
+              onChange={(e) => {
+                const whole = Math.floor(value).toString();
+                const fraction = e.target.value;
+                handleFractionChange(path, whole, fraction);
+              }}
+              style={{
+                width: '35%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+                fontSize: '14px',
+              }}
+            />
+          </div>
         ) : (
           <input
             id={inputId}
-            type={typeof value === 'number' ? 'number' : 'text'}
+            type="text"
             value={value}
-            step={typeof value === 'number' ? '0.1' : undefined}
             onChange={(e) => handleChange(path, e.target.value)}
             style={{
               width: '100%',
