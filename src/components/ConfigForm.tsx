@@ -37,10 +37,18 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
     if (typeof value === 'object' && !Array.isArray(value)) {
       return (
         <div key={path} style={{ marginLeft: '20px', marginBottom: '15px' }}>
-          <h4 style={{ color: '#b48943', marginBottom: '10px', textTransform: 'capitalize' }}>
+          <h4
+            style={{
+              color: '#b48943',
+              marginBottom: '10px',
+              textTransform: 'capitalize',
+            }}
+          >
             {key.replace(/([A-Z])/g, ' $1').trim()}
           </h4>
-          {Object.entries(value).map(([k, v]) => renderInput(k, v, `${path}.${k}`))}
+          {Object.entries(value).map(([k, v]) =>
+            renderInput(k, v, `${path}.${k}`)
+          )}
         </div>
       );
     }
@@ -50,7 +58,15 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
 
     return (
       <div key={path} style={{ marginBottom: '12px' }}>
-        <label htmlFor={inputId} style={{ display: 'block', marginBottom: '4px', fontSize: '14px', color: '#555' }}>
+        <label
+          htmlFor={inputId}
+          style={{
+            display: 'block',
+            marginBottom: '4px',
+            fontSize: '14px',
+            color: '#555',
+          }}
+        >
           {label}:
         </label>
         {typeof value === 'boolean' ? (
@@ -63,7 +79,7 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
               padding: '8px',
               borderRadius: '4px',
               border: '1px solid #ccc',
-              fontSize: '14px'
+              fontSize: '14px',
             }}
           >
             <option value="true">Yes</option>
@@ -81,7 +97,7 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
               padding: '8px',
               borderRadius: '4px',
               border: '1px solid #ccc',
-              fontSize: '14px'
+              fontSize: '14px',
             }}
           />
         )}
@@ -90,16 +106,18 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: '20px',
-      right: '20px',
-      width: '350px',
-      background: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-      zIndex: 1000
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        width: '350px',
+        background: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        zIndex: 1000,
+      }}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
@@ -114,7 +132,7 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
           fontWeight: 'bold',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <span>⚙️ Configure Planter Box</span>
@@ -122,15 +140,24 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
       </button>
 
       {isOpen && (
-        <div style={{
-          padding: '20px',
-          maxHeight: '70vh',
-          overflowY: 'auto',
-          borderTop: '1px solid #e2c184'
-        }}>
+        <div
+          style={{
+            padding: '20px',
+            maxHeight: '70vh',
+            overflowY: 'auto',
+            borderTop: '1px solid #e2c184',
+          }}
+        >
           {Object.entries(config).map(([key, value]) => {
             // Skip computed/complex values
-            if (key === 'parts' || key === 'cutPatterns' || key === 'planks' || key === 'legend' || key === 'totalPlanks' || key === 'svg') {
+            if (
+              key === 'parts' ||
+              key === 'cutPatterns' ||
+              key === 'planks' ||
+              key === 'legend' ||
+              key === 'totalPlanks' ||
+              key === 'svg'
+            ) {
               return null;
             }
             return renderInput(key, value, key);

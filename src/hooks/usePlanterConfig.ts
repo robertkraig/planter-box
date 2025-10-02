@@ -1,6 +1,14 @@
 import { useMemo } from 'react';
 import { generateAssemblyDiagram } from '../utils/generateSVG';
-import type {PlanterConfig, ExpandedConfig, Parts, CutPattern, Plank, Part, Strip} from '../types';
+import type {
+  PlanterConfig,
+  ExpandedConfig,
+  Parts,
+  CutPattern,
+  Plank,
+  Part,
+  Strip,
+} from '../types';
 
 export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
   return useMemo((): ExpandedConfig => {
@@ -24,10 +32,11 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     // Calculate bottom slat count dynamically based on interior width
     // Slats run along the length, spaced across the width
     const bottomSlatLength = box.interiorLength;
-    const bottomSlatCount = box.bottomSlats ?? Math.ceil(box.interiorWidth / plankWidth);
-    const bottomSlatGap = box.interiorWidth - (bottomSlatCount * plankWidth);
+    const bottomSlatCount =
+      box.bottomSlats ?? Math.ceil(box.interiorWidth / plankWidth);
+    const bottomSlatGap = box.interiorWidth - bottomSlatCount * plankWidth;
 
-    const topRimLength = box.interiorLength + (box.legWidth * 2);
+    const topRimLength = box.interiorLength + box.legWidth * 2;
 
     // Auto-generate parts
     const parts: Parts = {
@@ -35,28 +44,28 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
         length: sidePanelLength,
         width: plankWidth,
         count: sidePanelCount,
-        symbol: "①"
+        symbol: '①',
       },
       leg: {
         length: legHeight,
         width: box.legWidth,
         count: legCount,
-        symbol: "②"
+        symbol: '②',
       },
       bottomSlat: {
         length: bottomSlatLength,
         width: plankWidth,
         count: bottomSlatCount,
-        symbol: "③"
+        symbol: '③',
       },
       ...(box.hasTopRim && {
         topRim: {
           length: topRimLength,
           width: box.topRimWidth,
           count: 4,
-          symbol: "④"
-        }
-      })
+          symbol: '④',
+        },
+      }),
     };
 
     // Generate cut patterns
@@ -64,14 +73,19 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
 
     // Side panels
     const sidePanelsPerPlank = Math.floor(plankLength / sidePanelLength);
-    const sidePanelPlanksNeeded = Math.ceil(sidePanelCount / sidePanelsPerPlank);
+    const sidePanelPlanksNeeded = Math.ceil(
+      sidePanelCount / sidePanelsPerPlank
+    );
 
     for (let i = 0; i < sidePanelPlanksNeeded; i++) {
-      const cutsInThisPlank = Math.min(sidePanelsPerPlank, sidePanelCount - (i * sidePanelsPerPlank));
+      const cutsInThisPlank = Math.min(
+        sidePanelsPerPlank,
+        sidePanelCount - i * sidePanelsPerPlank
+      );
       cutPatterns.push({
-        part: "sidePanel",
+        part: 'sidePanel',
         count: cutsInThisPlank,
-        planks: 1
+        planks: 1,
       });
     }
 
@@ -82,25 +96,30 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     const legPlanksNeeded = Math.ceil(legCount / legsPerPlank);
 
     for (let i = 0; i < legPlanksNeeded; i++) {
-      const remainingLegs = legCount - (i * legsPerPlank);
+      const remainingLegs = legCount - i * legsPerPlank;
       cutPatterns.push({
-        part: "leg",
+        part: 'leg',
         count: Math.min(legsPerPlank, remainingLegs),
         planks: 1,
-        ripped: true
+        ripped: true,
       });
     }
 
     // Bottom slats
     const bottomSlatsPerPlank = Math.floor(plankLength / bottomSlatLength);
-    const bottomSlatPlanksNeeded = Math.ceil(bottomSlatCount / bottomSlatsPerPlank);
+    const bottomSlatPlanksNeeded = Math.ceil(
+      bottomSlatCount / bottomSlatsPerPlank
+    );
 
     for (let i = 0; i < bottomSlatPlanksNeeded; i++) {
-      const cutsInThisPlank = Math.min(bottomSlatsPerPlank, bottomSlatCount - (i * bottomSlatsPerPlank));
+      const cutsInThisPlank = Math.min(
+        bottomSlatsPerPlank,
+        bottomSlatCount - i * bottomSlatsPerPlank
+      );
       cutPatterns.push({
-        part: "bottomSlat",
+        part: 'bottomSlat',
         count: cutsInThisPlank,
-        planks: 1
+        planks: 1,
       });
     }
 
@@ -108,17 +127,22 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     if (box.hasTopRim && parts.topRim) {
       // Calculate how many pieces fit on one plank (considering both dimensions)
       const piecesPerStripLengthwise = Math.floor(plankLength / topRimLength);
-      const stripsPerPlankWidthwise = Math.floor(plankWidth / parts.topRim.width);
+      const stripsPerPlankWidthwise = Math.floor(
+        plankWidth / parts.topRim.width
+      );
       const topRimPerPlank = piecesPerStripLengthwise * stripsPerPlankWidthwise;
       const topRimPlanksNeeded = Math.ceil(4 / topRimPerPlank);
 
       for (let i = 0; i < topRimPlanksNeeded; i++) {
-        const cutsInThisPlank = Math.min(topRimPerPlank, 4 - (i * topRimPerPlank));
+        const cutsInThisPlank = Math.min(
+          topRimPerPlank,
+          4 - i * topRimPerPlank
+        );
         cutPatterns.push({
-          part: "topRim",
+          part: 'topRim',
           count: cutsInThisPlank,
           planks: 1,
-          ripped: true
+          ripped: true,
         });
       }
     }
@@ -129,7 +153,10 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     }
 
     // Calculate total planks
-    const totalPlanks = cutPatterns.reduce((sum, pattern) => sum + pattern.planks, 0);
+    const totalPlanks = cutPatterns.reduce(
+      (sum, pattern) => sum + pattern.planks,
+      0
+    );
 
     // Generate planks
     const planks = generatePlanks(cutPatterns, parts, plankLength, plankWidth);
@@ -145,19 +172,19 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
 
       return {
         symbol: part.symbol,
-        description
+        description,
       };
     });
 
     // Generate SVG diagram dynamically
-    const svg = generateAssemblyDiagram({ 
-      ...config, 
-      parts, 
-      box: { 
-        ...box, 
+    const svg = generateAssemblyDiagram({
+      ...config,
+      parts,
+      box: {
+        ...box,
         panelRows,
-        bottomSlats: bottomSlatCount 
-      } 
+        bottomSlats: bottomSlatCount,
+      },
     });
 
     return {
@@ -167,22 +194,27 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       totalPlanks,
       planks,
       legend,
-      svg
+      svg,
     };
   }, [config]);
 }
 
-function generatePlanks(cutPatterns: CutPattern[], parts: Parts, plankLength: number, plankWidth: number): Plank[] {
+function generatePlanks(
+  cutPatterns: CutPattern[],
+  parts: Parts,
+  plankLength: number,
+  plankWidth: number
+): Plank[] {
   let plankNum = 1;
 
-  return cutPatterns.flatMap(pattern =>
+  return cutPatterns.flatMap((pattern) =>
     Array.from({ length: pattern.planks }, (): Plank => {
       const label = `Plank ${plankNum++}`;
 
       if (pattern.spare) {
         return {
           label,
-          type: "spare"
+          type: 'spare',
         };
       }
 
@@ -190,7 +222,7 @@ function generatePlanks(cutPatterns: CutPattern[], parts: Parts, plankLength: nu
       const part = parts[partKey];
 
       if (!part) {
-        return { label, type: "spare" };
+        return { label, type: 'spare' };
       }
 
       const totalCutLength = part.length * (pattern.count ?? 0);
@@ -201,34 +233,38 @@ function generatePlanks(cutPatterns: CutPattern[], parts: Parts, plankLength: nu
 
       if (needsRip) {
         switch (pattern.part) {
-          case "leg":
+          case 'leg':
             return {
               label,
-              ...createLegPlank(part, pattern, plankLength)
+              ...createLegPlank(part, pattern, plankLength),
             };
-          case "topRim":
+          case 'topRim':
             return {
               label,
-              ...createTopRimPlank(part, pattern, plankLength)
+              ...createTopRimPlank(part, pattern, plankLength),
             };
           default:
             return {
               label,
               ...createNormalPlank(part, pattern, spareLength),
-              ripWidth: part.width
+              ripWidth: part.width,
             };
         }
       } else {
         return {
           label,
-          ...createNormalPlank(part, pattern, spareLength)
+          ...createNormalPlank(part, pattern, spareLength),
         };
       }
     })
   );
 }
 
-function createLegPlank(part: Part, pattern: CutPattern, plankLength: number): Omit<Plank, 'label'> {
+function createLegPlank(
+  part: Part,
+  pattern: CutPattern,
+  plankLength: number
+): Omit<Plank, 'label'> {
   // Calculate how many pieces fit on one strip lengthwise
   const piecesPerStrip = Math.floor(plankLength / part.length);
   const totalPieces = pattern.count ?? 0;
@@ -247,21 +283,25 @@ function createLegPlank(part: Part, pattern: CutPattern, plankLength: number): O
       ripLabel: `rip to ${part.width}"`,
       cuts: [
         { length: part.length, label: part.symbol, count: piecesInThisStrip },
-        { length: plankLength - totalCutLength, label: "spare", spare: true }
-      ]
+        { length: plankLength - totalCutLength, label: 'spare', spare: true },
+      ],
     });
 
     remainingPieces -= piecesInThisStrip;
   }
 
   return {
-    type: "ripped",
+    type: 'ripped',
     ripWidth: part.width,
-    strips
+    strips,
   };
 }
 
-function createTopRimPlank(part: Part, pattern: CutPattern, plankLength: number): Omit<Plank, 'label'> {
+function createTopRimPlank(
+  part: Part,
+  pattern: CutPattern,
+  plankLength: number
+): Omit<Plank, 'label'> {
   // Calculate how many pieces fit on one strip lengthwise
   const piecesPerStrip = Math.floor(plankLength / part.length);
   const totalPieces = pattern.count ?? 0;
@@ -280,26 +320,30 @@ function createTopRimPlank(part: Part, pattern: CutPattern, plankLength: number)
       ripLabel: `rip to ${part.width}"`,
       cuts: [
         { length: part.length, label: part.symbol, count: piecesInThisStrip },
-        { length: plankLength - totalCutLength, label: "spare", spare: true }
-      ]
+        { length: plankLength - totalCutLength, label: 'spare', spare: true },
+      ],
     });
 
     remainingPieces -= piecesInThisStrip;
   }
 
   return {
-    type: "ripped",
+    type: 'ripped',
     ripWidth: part.width,
-    strips
+    strips,
   };
 }
 
-function createNormalPlank(part: Part, pattern: CutPattern, spareLength: number): Omit<Plank, 'label'> {
+function createNormalPlank(
+  part: Part,
+  pattern: CutPattern,
+  spareLength: number
+): Omit<Plank, 'label'> {
   return {
-    type: "normal",
+    type: 'normal',
     cuts: [
       { length: part.length, label: part.symbol, count: pattern.count ?? 0 },
-      { length: spareLength, label: "spare", spare: true }
-    ]
+      { length: spareLength, label: 'spare', spare: true },
+    ],
   };
 }

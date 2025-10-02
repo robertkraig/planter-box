@@ -13,7 +13,9 @@ interface PlankProps {
 export function Plank({ plank, plankLength, scale }: PlankProps) {
   switch (plank.type) {
     case 'spare':
-      return <SparePlank plank={plank} plankLength={plankLength} scale={scale} />;
+      return (
+        <SparePlank plank={plank} plankLength={plankLength} scale={scale} />
+      );
     case 'normal':
       return <NormalPlank plank={plank} scale={scale} />;
     case 'ripped':

@@ -8,7 +8,14 @@ export function AssemblyDiagram({ svg }: AssemblyDiagramProps) {
   if (!svg) return null;
 
   return (
-    <div style={{ width: '800px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px' }}>
+    <div
+      style={{
+        width: '800px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '30px',
+      }}
+    >
       <svg
         width={svg.width || 700}
         height={svg.height || 340}

@@ -12,7 +12,8 @@ export function PlanterCutlist({ config }: PlanterCutlistProps) {
     <>
       <div className="cutlist-container">
         <h2>
-          {config.title} Cutlist ({config.totalPlanks} Planks @ {config.plankLength}" × {config.plankWidth}")
+          {config.title} Cutlist ({config.totalPlanks} Planks @{' '}
+          {config.plankLength}" × {config.plankWidth}")
         </h2>
 
         {config.planks.map((plank, idx) => (

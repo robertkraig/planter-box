@@ -15,7 +15,7 @@ export function NormalPlank({ plank, scale }: NormalPlankProps) {
             rip to {plank.ripWidth}"
           </span>
         )}
-        {plank.cuts.map((cut, cutIdx) => {
+        {(plank.cuts ?? []).map((cut, cutIdx) => {
           const width = cut.length * scale;
           const cssClass = cut.spare ? 'cut spare' : 'cut';
           const labelText = cut.spare ? 'spare' : cut.label;
@@ -27,7 +27,8 @@ export function NormalPlank({ plank, scale }: NormalPlankProps) {
               className={cssClass}
               style={{ width: `${width}px` }}
             >
-              {labelText}<br />
+              {labelText}
+              <br />
               <span>{cut.length}"</span>
             </div>
           ));

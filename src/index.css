@@ -33,7 +33,7 @@ body {
 .plank {
   display: flex;
   position: relative;
-  width: 720px;   /* 10px = 1" for scale */
+  width: 720px; /* 10px = 1" for scale */
   height: 38px;
   background: #e6ccaa;
   border: 2px solid #ad8b62;

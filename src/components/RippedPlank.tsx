@@ -12,7 +12,10 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
   return (
     <div className="plank-row">
       <span className="plank-label">{plank.label}</span>
-      <div className="plank" style={{ height: `${plankHeight}px`, flexDirection: 'column' }}>
+      <div
+        className="plank"
+        style={{ height: `${plankHeight}px`, flexDirection: 'column' }}
+      >
         {plank.strips.map((strip, idx) => (
           <div
             key={idx}
@@ -23,7 +26,8 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
               flexDirection: 'row',
               height: stripHeight,
               position: 'relative',
-              borderBottom: idx < plank.strips.length - 1 ? '2px dotted #b14416' : 'none'
+              borderBottom:
+                idx < plank.strips.length - 1 ? '2px dotted #b14416' : 'none',
             }}
           >
             {strip.cuts.map((cut, cutIdx) => {
@@ -49,11 +53,19 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
                       height: '100%',
                       borderBottom: 'none',
                       borderRight: showBorder ? '2px dashed #b14416' : 'none',
-                      position: 'relative'
+                      position: 'relative',
                     }}
                   >
                     {showRipLabel && (
-                      <span className="rip-label" style={{ position: 'absolute', right: '4px', top: '2px', fontSize: '11px' }}>
+                      <span
+                        className="rip-label"
+                        style={{
+                          position: 'absolute',
+                          right: '4px',
+                          top: '2px',
+                          fontSize: '11px',
+                        }}
+                      >
                         {strip.ripLabel}
                       </span>
                     )}
