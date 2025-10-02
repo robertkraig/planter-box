@@ -1,0 +1,24 @@
+{
+  // Basic configuration
+  title: "20 Gallon Cedar Planter Box",
+
+  // Material specifications
+  plankLength: 72,        // inches (standard 6' board)
+  plankWidth: 5.5,        // inches (standard 1×6)
+  plankThickness: 0.625,  // inches (5/8")
+  scale: 10,              // pixels per inch for visualization
+
+  // Box dimensions - CHANGE THESE to customize your planter
+  box: {
+    interiorLength: 17,    // inches (inside dimension)
+    interiorWidth: 17,     // inches (inside dimension)
+    height: 16.5,          // inches (inside height) - panelRows auto-calculated
+    legWidth: 2.75,        // inches (leg cross-section)
+    hasTopRim: true,       // add decorative top rim?
+    topRimWidth: 1.5,      // inches
+    bottomSlats: 4         // number of slats for bottom
+  },
+
+  // Spare planks to order extra
+  sparePlanks: 2
+}

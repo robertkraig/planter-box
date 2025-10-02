@@ -1,0 +1,50 @@
+export function AssemblyDiagram({ svg }) {
+  if (!svg) return null;
+
+  return (
+    <div style={{ width: '800px', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px' }}>
+      <svg
+        width={svg.width || 700}
+        height={svg.height || 340}
+        viewBox={`0 0 ${svg.width || 700} ${svg.height || 340}`}
+        fontFamily="sans-serif"
+      >
+        {svg.sections?.map((section, sectionIdx) => (
+          <g key={sectionIdx}>
+            {section.elements?.map((el, elIdx) => {
+              if (el.type === 'rect') {
+                return (
+                  <rect
+                    key={elIdx}
+                    x={el.x}
+                    y={el.y}
+                    width={el.width}
+                    height={el.height}
+                    fill={el.fill}
+                    stroke={el.stroke}
+                    strokeWidth={el.strokeWidth || 2}
+                    strokeDasharray={el.strokeDasharray}
+                  />
+                );
+              } else if (el.type === 'text') {
+                return (
+                  <text
+                    key={elIdx}
+                    x={el.x}
+                    y={el.y}
+                    fontSize={el.fontSize}
+                    fill={el.fill}
+                    fontWeight={el.fontWeight}
+                  >
+                    {el.content}
+                  </text>
+                );
+              }
+              return null;
+            })}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
