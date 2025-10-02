@@ -147,11 +147,6 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       }
     }
 
-    // Spare planks
-    if (sparePlanks > 0) {
-      cutPatterns.push({ spare: true, planks: sparePlanks });
-    }
-
     // Calculate total planks
     const totalPlanks = cutPatterns.reduce(
       (sum, pattern) => sum + pattern.planks,

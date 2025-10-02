@@ -156,7 +156,8 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
               key === 'planks' ||
               key === 'legend' ||
               key === 'totalPlanks' ||
-              key === 'svg'
+              key === 'svg' ||
+              key === 'sparePlanks'
             ) {
               return null;
             }
