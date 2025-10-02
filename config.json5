@@ -6,6 +6,7 @@
   plankLength: 72,        // inches (standard 6' board)
   plankWidth: 5.5,        // inches (standard 1×6)
   plankThickness: 0.625,  // inches (5/8")
+  kerf: 0.125,            // inches (blade width, typically 1/8")
   scale: 10,              // pixels per inch for visualization
 
   // Box dimensions - CHANGE THESE to customize your planter

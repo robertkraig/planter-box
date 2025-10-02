@@ -19,6 +19,7 @@ export interface PlanterConfig {
   plankLength: number;
   plankWidth: number;
   plankThickness: number;
+  kerf: number;
   scale: number;
   box: BoxConfig;
   sparePlanks: number;

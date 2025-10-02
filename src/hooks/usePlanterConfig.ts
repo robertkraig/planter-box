@@ -17,7 +17,7 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       return config as ExpandedConfig;
     }
 
-    const { box, plankLength, plankWidth, sparePlanks } = config;
+    const { box, plankLength, plankWidth, kerf, sparePlanks } = config;
 
     // Validate dimensions to prevent division by zero
     if (!plankLength || plankLength <= 0 || !plankWidth || plankWidth <= 0) {
@@ -76,8 +76,10 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     // Generate cut patterns
     const cutPatterns = [];
 
-    // Side panels
-    const sidePanelsPerPlank = Math.floor(plankLength / sidePanelLength);
+    // Side panels (accounting for kerf between cuts)
+    const sidePanelsPerPlank = Math.floor(
+      (plankLength + kerf) / (sidePanelLength + kerf)
+    );
     const sidePanelPlanksNeeded = Math.ceil(
       sidePanelCount / sidePanelsPerPlank
     );
@@ -94,8 +96,10 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       });
     }
 
-    // Legs (ripped planks)
-    const legsPerStripLengthwise = Math.floor(plankLength / legHeight);
+    // Legs (ripped planks, accounting for kerf between cuts)
+    const legsPerStripLengthwise = Math.floor(
+      (plankLength + kerf) / (legHeight + kerf)
+    );
     const stripsPerPlankWidthwise = Math.floor(plankWidth / box.legWidth);
     const legsPerPlank = legsPerStripLengthwise * stripsPerPlankWidthwise;
     const legPlanksNeeded = Math.ceil(legCount / legsPerPlank);
@@ -110,8 +114,10 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       });
     }
 
-    // Bottom slats
-    const bottomSlatsPerPlank = Math.floor(plankLength / bottomSlatLength);
+    // Bottom slats (accounting for kerf between cuts)
+    const bottomSlatsPerPlank = Math.floor(
+      (plankLength + kerf) / (bottomSlatLength + kerf)
+    );
     const bottomSlatPlanksNeeded = Math.ceil(
       bottomSlatCount / bottomSlatsPerPlank
     );
@@ -128,10 +134,12 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       });
     }
 
-    // Top rim
+    // Top rim (accounting for kerf between cuts)
     if (box.hasTopRim && parts.topRim) {
       // Calculate how many pieces fit on one plank (considering both dimensions)
-      const piecesPerStripLengthwise = Math.floor(plankLength / topRimLength);
+      const piecesPerStripLengthwise = Math.floor(
+        (plankLength + kerf) / (topRimLength + kerf)
+      );
       const stripsPerPlankWidthwise = Math.floor(
         plankWidth / parts.topRim.width
       );
@@ -174,6 +182,17 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
         symbol: part.symbol,
         description,
       };
+    });
+
+    // Calculate box volume
+    const volumeCubicInches = box.interiorLength * box.interiorWidth * box.height;
+    const volumeCubicFeet = volumeCubicInches / 1728;
+    const volumeGallons = volumeCubicFeet * 7.48;
+
+    // Add volume info to legend
+    legend.push({
+      symbol: '📦',
+      description: `Capacity: ${volumeCubicFeet.toFixed(2)} ft³ (${volumeGallons.toFixed(1)} gallons)`,
     });
 
     // Generate SVG diagram dynamically

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ExpandedConfig, PlanterConfig } from '../types';
+import { formatFraction } from '../utils/formatFraction';
 
 interface ConfigFormProps {
   config: ExpandedConfig;
@@ -92,7 +93,12 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
             color: '#555',
           }}
         >
-          {label}:
+          {label}:{' '}
+          {typeof value === 'number' && (
+            <span style={{ color: '#888', fontWeight: 'normal' }}>
+              ({formatFraction(value)})
+            </span>
+          )}
         </label>
         {typeof value === 'boolean' ? (
           <select
