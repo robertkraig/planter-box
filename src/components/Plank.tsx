@@ -2,8 +2,15 @@ import { SparePlank } from './SparePlank';
 import { NormalPlank } from './NormalPlank';
 import { RippedPlank } from './RippedPlank';
 import { MultiRipPlank } from './MultiRipPlank';
+import type { Plank as PlankType } from '../types';
 
-export function Plank({ plank, plankLength, scale }) {
+interface PlankProps {
+  plank: PlankType;
+  plankLength: number;
+  scale: number;
+}
+
+export function Plank({ plank, plankLength, scale }: PlankProps) {
   switch (plank.type) {
     case 'spare':
       return <SparePlank plank={plank} plankLength={plankLength} scale={scale} />;

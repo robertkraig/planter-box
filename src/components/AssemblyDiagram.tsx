@@ -1,4 +1,10 @@
-export function AssemblyDiagram({ svg }) {
+import type { SVGDiagram } from '../types';
+
+interface AssemblyDiagramProps {
+  svg: SVGDiagram;
+}
+
+export function AssemblyDiagram({ svg }: AssemblyDiagramProps) {
   if (!svg) return null;
 
   return (

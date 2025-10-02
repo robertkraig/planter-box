@@ -1,4 +1,11 @@
-export function Legend({ legend, plankLength }) {
+import type { LegendItem } from '../types';
+
+interface LegendProps {
+  legend: LegendItem[];
+  plankLength: number;
+}
+
+export function Legend({ legend, plankLength }: LegendProps) {
   return (
     <div className="legend">
       <b>Legend:</b>

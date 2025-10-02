@@ -1,4 +1,11 @@
-export function NormalPlank({ plank, scale }) {
+import type { Plank } from '../types';
+
+interface NormalPlankProps {
+  plank: Plank;
+  scale: number;
+}
+
+export function NormalPlank({ plank, scale }: NormalPlankProps) {
   return (
     <div className="plank-row">
       <span className="plank-label">{plank.label}</span>

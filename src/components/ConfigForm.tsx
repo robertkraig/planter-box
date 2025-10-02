@@ -1,9 +1,15 @@
 import { useState } from 'react';
+import type { ExpandedConfig, PlanterConfig } from '../types';
 
-export function ConfigForm({ config, onConfigChange }) {
+interface ConfigFormProps {
+  config: ExpandedConfig;
+  onConfigChange: (config: PlanterConfig) => void;
+}
+
+export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange = (path, value) => {
+  const handleChange = (path: string, value: string) => {
     const newConfig = { ...config };
     const keys = path.split('.');
     let current = newConfig;

@@ -1,4 +1,12 @@
-export function SparePlank({ plank, plankLength, scale }) {
+import type { Plank } from '../types';
+
+interface SparePlankProps {
+  plank: Plank;
+  plankLength: number;
+  scale: number;
+}
+
+export function SparePlank({ plank, plankLength, scale }: SparePlankProps) {
   return (
     <div className="plank-row">
       <span className="plank-label">{plank.label}</span>

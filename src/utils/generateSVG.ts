@@ -1,4 +1,11 @@
-export function generateAssemblyDiagram(config) {
+import type { PlanterConfig, Parts, BoxConfig, SVGDiagram } from '../types';
+
+interface DiagramConfig extends PlanterConfig {
+  parts: Parts;
+  box: BoxConfig & { panelRows: number };
+}
+
+export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
   const { box, parts } = config;
   const scale = 5; // SVG scale factor (pixels per inch)
 

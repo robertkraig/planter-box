@@ -15,8 +15,8 @@
     height: 16.5,          // inches (inside height) - panelRows auto-calculated
     legWidth: 2.75,        // inches (leg cross-section)
     hasTopRim: true,       // add decorative top rim?
-    topRimWidth: 1.5,      // inches
-    bottomSlats: 4         // number of slats for bottom
+    topRimWidth: 1.5       // inches
+    // bottomSlats: auto-calculated based on how many plankWidth (5.5") fit across interiorWidth
   },
 
   // Spare planks to order extra

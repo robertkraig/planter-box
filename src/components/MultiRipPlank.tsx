@@ -1,4 +1,11 @@
-export function MultiRipPlank({ plank, plankLength }) {
+import type { Plank } from '../types';
+
+interface MultiRipPlankProps {
+  plank: Plank;
+  plankLength: number;
+}
+
+export function MultiRipPlank({ plank, plankLength }: MultiRipPlankProps) {
   let totalWidth = 0;
 
   return (

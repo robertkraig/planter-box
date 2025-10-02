@@ -1,8 +1,13 @@
 import { Plank } from './Plank';
 import { Legend } from './Legend';
 import { AssemblyDiagram } from './AssemblyDiagram';
+import type { ExpandedConfig } from '../types';
 
-export function PlanterCutlist({ config }) {
+interface PlanterCutlistProps {
+  config: ExpandedConfig;
+}
+
+export function PlanterCutlist({ config }: PlanterCutlistProps) {
   return (
     <>
       <div className="cutlist-container">

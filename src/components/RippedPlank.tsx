@@ -1,4 +1,11 @@
-export function RippedPlank({ plank, plankLength }) {
+import type { Plank } from '../types';
+
+interface RippedPlankProps {
+  plank: Plank;
+  plankLength: number;
+}
+
+export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
   const stripHeight = `${100 / plank.strips.length}%`;
   const plankHeight = plank.strips.length * 19;
 
