@@ -49,8 +49,7 @@ export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
               return Array.from({ length: count }, (_, i) => {
                 const cutWidth = cut.length * scale;
                 // Don't show right border between cuts of the same type, only between different cut types
-                const isLastOfType = i === count - 1;
-                const showBorder = !isLastOfType && !cut.spare;
+                const showBorder = !cut.spare;
                 // Show rip label in first non-spare cut only
                 const showRipLabel = cutIdx === 0 && i === 0 && !cut.spare;
 

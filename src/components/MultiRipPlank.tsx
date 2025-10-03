@@ -4,7 +4,6 @@ import { formatFraction } from '../utils/formatFraction.ts';
 interface MultiRipPlankProps {
   plank: Plank;
   plankLength: number;
-  scale: number;
 }
 
 export function MultiRipPlank({ plank, plankLength }: MultiRipPlankProps) {
