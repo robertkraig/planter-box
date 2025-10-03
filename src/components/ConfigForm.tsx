@@ -119,6 +119,10 @@ export function ConfigForm({
       });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const renderInput = (key: string, value: any, path: string) => {
     if (typeof value === 'object' && !Array.isArray(value)) {
       return (
@@ -224,6 +228,14 @@ export function ConfigForm({
           title="Share Configuration"
         >
           <span>🔗</span>
+        </button>
+        <button
+          onClick={handlePrint}
+          className="config-form-nav-btn"
+          aria-label="Print cutlist"
+          title="Print Cutlist"
+        >
+          <span>🖨️</span>
         </button>
       </div>
 
