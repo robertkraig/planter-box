@@ -12,7 +12,7 @@ export function Legend({ legend, plankLength }: LegendProps) {
       <ul style={{ listStyle: 'none', paddingLeft: '0' }}>
         {legend.map((item, idx) => (
           <li key={idx}>
-            {item.symbol} {item.description}
+            <strong>{item.symbol}</strong> {item.description}
           </li>
         ))}
       </ul>

@@ -1,4 +1,5 @@
 import type { Plank } from '../types';
+import {formatFraction} from "../utils/formatFraction.ts";
 
 interface SparePlankProps {
   plank: Plank;
@@ -17,7 +18,7 @@ export function SparePlank({ plank, plankLength, scale }: SparePlankProps) {
         >
           spare
           <br />
-          <span>{plankLength}"</span>
+            <span dangerouslySetInnerHTML={{__html: formatFraction(plankLength)}}></span>
         </div>
       </div>
     </div>

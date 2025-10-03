@@ -7,7 +7,6 @@
   plankWidth: 5.5,        // inches (standard 1×6)
   plankThickness: 0.625,  // inches (5/8")
   kerf: 0.125,            // inches (blade width, typically 1/8")
-  scale: 10,              // pixels per inch for visualization
 
   // Box dimensions - CHANGE THESE to customize your planter
   box: {
@@ -15,6 +14,7 @@
     interiorWidth: 17,     // inches (inside dimension)
     height: 16.5,          // inches (inside height) - panelRows auto-calculated
     legWidth: 2.75,        // inches (leg cross-section)
+    legGap: 6,             // inches (gap below box for elevation/drainage)
     hasTopRim: true,       // add decorative top rim?
     topRimWidth: 1.5       // inches
     // bottomSlats: auto-calculated based on how many plankWidth (5.5") fit across interiorWidth

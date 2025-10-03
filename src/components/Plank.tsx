@@ -7,10 +7,11 @@ import type { Plank as PlankType } from '../types';
 interface PlankProps {
   plank: PlankType;
   plankLength: number;
-  scale: number;
 }
 
-export function Plank({ plank, plankLength, scale }: PlankProps) {
+export function Plank({ plank, plankLength }: PlankProps) {
+  const scale = 10; // pixels per inch
+
   switch (plank.type) {
     case 'spare':
       return (
@@ -19,9 +20,9 @@ export function Plank({ plank, plankLength, scale }: PlankProps) {
     case 'normal':
       return <NormalPlank plank={plank} scale={scale} />;
     case 'ripped':
-      return <RippedPlank plank={plank} plankLength={plankLength} />;
+      return <RippedPlank plank={plank} plankLength={plankLength} scale={scale} />;
     case 'multi-rip':
-      return <MultiRipPlank plank={plank} plankLength={plankLength} />;
+      return <MultiRipPlank plank={plank} plankLength={plankLength} scale={scale} />;
     default:
       return null;
   }

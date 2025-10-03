@@ -28,10 +28,12 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     const panelRows = Math.floor(box.height / plankWidth);
 
     // Calculate part dimensions and counts based on box geometry
-    const sidePanelLength = box.interiorLength;
-    const sidePanelCount = panelRows * 4;
+    const sidePanelLengthDim = box.interiorLength;
+    const sidePanelWidthDim = box.interiorWidth;
+    const sidePanelLengthCount = panelRows * 2; // 2 length sides
+    const sidePanelWidthCount = panelRows * 2;  // 2 width sides
 
-    const legHeight = box.height;
+    const legHeight = box.height + box.legGap;
     const legCount = 8;
 
     // Calculate bottom slat count dynamically based on interior width
@@ -41,14 +43,21 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       box.bottomSlats ?? Math.ceil(box.interiorWidth / plankWidth);
     const bottomSlatGap = box.interiorWidth - bottomSlatCount * plankWidth;
 
-    const topRimLength = box.interiorLength + box.legWidth * 2;
+    const topRimLengthSide = box.interiorLength + box.legWidth * 2;
+    const topRimWidthSide = box.interiorWidth + box.legWidth * 2;
 
     // Auto-generate parts
     const parts: Parts = {
-      sidePanel: {
-        length: sidePanelLength,
+      sidePanelLength: {
+        length: sidePanelLengthDim,
         width: plankWidth,
-        count: sidePanelCount,
+        count: sidePanelLengthCount,
+        symbol: '①',
+      },
+      sidePanelWidth: {
+        length: sidePanelWidthDim,
+        width: plankWidth,
+        count: sidePanelWidthCount,
         symbol: '①',
       },
       leg: {
@@ -64,11 +73,17 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
         symbol: '③',
       },
       ...(box.hasTopRim && {
-        topRim: {
-          length: topRimLength,
+        topRimLength: {
+          length: topRimLengthSide,
           width: box.topRimWidth,
-          count: 4,
+          count: 2,
           symbol: '④',
+        },
+        topRimWidth: {
+          length: topRimWidthSide,
+          width: box.topRimWidth,
+          count: 2,
+          symbol: '⑤',
         },
       }),
     };
@@ -76,21 +91,41 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     // Generate cut patterns
     const cutPatterns = [];
 
-    // Side panels (accounting for kerf between cuts)
-    const sidePanelsPerPlank = Math.floor(
-      (plankLength + kerf) / (sidePanelLength + kerf)
+    // Side panels - LENGTH sides (accounting for kerf between cuts)
+    const sidePanelsLengthPerPlank = Math.floor(
+      (plankLength + kerf) / (sidePanelLengthDim + kerf)
     );
-    const sidePanelPlanksNeeded = Math.ceil(
-      sidePanelCount / sidePanelsPerPlank
+    const sidePanelLengthPlanksNeeded = Math.ceil(
+      sidePanelLengthCount / sidePanelsLengthPerPlank
     );
 
-    for (let i = 0; i < sidePanelPlanksNeeded; i++) {
+    for (let i = 0; i < sidePanelLengthPlanksNeeded; i++) {
       const cutsInThisPlank = Math.min(
-        sidePanelsPerPlank,
-        sidePanelCount - i * sidePanelsPerPlank
+        sidePanelsLengthPerPlank,
+        sidePanelLengthCount - i * sidePanelsLengthPerPlank
       );
       cutPatterns.push({
-        part: 'sidePanel',
+        part: 'sidePanelLength',
+        count: cutsInThisPlank,
+        planks: 1,
+      });
+    }
+
+    // Side panels - WIDTH sides (accounting for kerf between cuts)
+    const sidePanelsWidthPerPlank = Math.floor(
+      (plankLength + kerf) / (sidePanelWidthDim + kerf)
+    );
+    const sidePanelWidthPlanksNeeded = Math.ceil(
+      sidePanelWidthCount / sidePanelsWidthPerPlank
+    );
+
+    for (let i = 0; i < sidePanelWidthPlanksNeeded; i++) {
+      const cutsInThisPlank = Math.min(
+        sidePanelsWidthPerPlank,
+        sidePanelWidthCount - i * sidePanelsWidthPerPlank
+      );
+      cutPatterns.push({
+        part: 'sidePanelWidth',
         count: cutsInThisPlank,
         planks: 1,
       });
@@ -134,25 +169,51 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       });
     }
 
-    // Top rim (accounting for kerf between cuts)
-    if (box.hasTopRim && parts.topRim) {
+    // Top rim - length sides (accounting for kerf between cuts)
+    if (box.hasTopRim && parts.topRimLength) {
       // Calculate how many pieces fit on one plank (considering both dimensions)
       const piecesPerStripLengthwise = Math.floor(
-        (plankLength + kerf) / (topRimLength + kerf)
+        (plankLength + kerf) / (topRimLengthSide + kerf)
       );
       const stripsPerPlankWidthwise = Math.floor(
-        plankWidth / parts.topRim.width
+        plankWidth / parts.topRimLength.width
       );
       const topRimPerPlank = piecesPerStripLengthwise * stripsPerPlankWidthwise;
-      const topRimPlanksNeeded = Math.ceil(4 / topRimPerPlank);
+      const topRimPlanksNeeded = Math.ceil(2 / topRimPerPlank);
 
       for (let i = 0; i < topRimPlanksNeeded; i++) {
         const cutsInThisPlank = Math.min(
           topRimPerPlank,
-          4 - i * topRimPerPlank
+          2 - i * topRimPerPlank
         );
         cutPatterns.push({
-          part: 'topRim',
+          part: 'topRimLength',
+          count: cutsInThisPlank,
+          planks: 1,
+          ripped: true,
+        });
+      }
+    }
+
+    // Top rim - width sides (accounting for kerf between cuts)
+    if (box.hasTopRim && parts.topRimWidth) {
+      // Calculate how many pieces fit on one plank (considering both dimensions)
+      const piecesPerStripLengthwise = Math.floor(
+        (plankLength + kerf) / (topRimWidthSide + kerf)
+      );
+      const stripsPerPlankWidthwise = Math.floor(
+        plankWidth / parts.topRimWidth.width
+      );
+      const topRimPerPlank = piecesPerStripLengthwise * stripsPerPlankWidthwise;
+      const topRimPlanksNeeded = Math.ceil(2 / topRimPerPlank);
+
+      for (let i = 0; i < topRimPlanksNeeded; i++) {
+        const cutsInThisPlank = Math.min(
+          topRimPerPlank,
+          2 - i * topRimPerPlank
+        );
+        cutPatterns.push({
+          part: 'topRimWidth',
           count: cutsInThisPlank,
           planks: 1,
           ripped: true,
@@ -167,7 +228,7 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     );
 
     // Generate planks
-    const planks = generatePlanks(cutPatterns, parts, plankLength, plankWidth);
+    const planks = generatePlanks(cutPatterns, parts, plankLength, plankWidth, kerf);
 
     // Generate legend
     const legend = Object.entries(parts).map(([key, part]) => {
@@ -222,7 +283,8 @@ function generatePlanks(
   cutPatterns: CutPattern[],
   parts: Parts,
   plankLength: number,
-  plankWidth: number
+  plankWidth: number,
+  kerf: number
 ): Plank[] {
   let plankNum = 1;
 
@@ -244,8 +306,11 @@ function generatePlanks(
         return { label, type: 'spare' };
       }
 
-      const totalCutLength = part.length * (pattern.count ?? 0);
-      const spareLength = plankLength - totalCutLength;
+      const numPieces = pattern.count ?? 0;
+      // Account for kerf: n pieces require n-1 cuts
+      const totalCutLength = part.length * numPieces;
+      const kerfLoss = kerf * Math.max(0, numPieces - 1);
+      const spareLength = plankLength - totalCutLength - kerfLoss;
 
       // Automatically detect if ripping is needed based on part width
       const needsRip = part.width < plankWidth;
@@ -255,12 +320,13 @@ function generatePlanks(
           case 'leg':
             return {
               label,
-              ...createLegPlank(part, pattern, plankLength),
+              ...createLegPlank(part, pattern, plankLength, kerf),
             };
-          case 'topRim':
+          case 'topRimLength':
+          case 'topRimWidth':
             return {
               label,
-              ...createTopRimPlank(part, pattern, plankLength),
+              ...createTopRimPlank(part, pattern, plankLength, kerf),
             };
           default:
             return {
@@ -282,10 +348,11 @@ function generatePlanks(
 function createLegPlank(
   part: Part,
   pattern: CutPattern,
-  plankLength: number
+  plankLength: number,
+  kerf: number
 ): Omit<Plank, 'label'> {
-  // Calculate how many pieces fit on one strip lengthwise
-  const piecesPerStrip = Math.floor(plankLength / part.length);
+  // Calculate how many pieces fit on one strip lengthwise (accounting for kerf)
+  const piecesPerStrip = Math.floor((plankLength + kerf) / (part.length + kerf));
   const totalPieces = pattern.count ?? 0;
 
   // Calculate how many strips we need
@@ -297,12 +364,14 @@ function createLegPlank(
   for (let i = 0; i < stripsNeeded; i++) {
     const piecesInThisStrip = Math.min(piecesPerStrip, remainingPieces);
     const totalCutLength = piecesInThisStrip * part.length;
+    const kerfLoss = kerf * Math.max(0, piecesInThisStrip - 1);
+    const spareLength = plankLength - totalCutLength - kerfLoss;
 
     strips.push({
       ripLabel: `rip to ${part.width}"`,
       cuts: [
         { length: part.length, label: part.symbol, count: piecesInThisStrip },
-        { length: plankLength - totalCutLength, label: 'spare', spare: true },
+        { length: spareLength, label: 'spare', spare: true },
       ],
     });
 
@@ -319,10 +388,11 @@ function createLegPlank(
 function createTopRimPlank(
   part: Part,
   pattern: CutPattern,
-  plankLength: number
+  plankLength: number,
+  kerf: number
 ): Omit<Plank, 'label'> {
-  // Calculate how many pieces fit on one strip lengthwise
-  const piecesPerStrip = Math.floor(plankLength / part.length);
+  // Calculate how many pieces fit on one strip lengthwise (accounting for kerf)
+  const piecesPerStrip = Math.floor((plankLength + kerf) / (part.length + kerf));
   const totalPieces = pattern.count ?? 0;
 
   // Calculate how many strips we need (optimize to use fewer strips)
@@ -334,12 +404,14 @@ function createTopRimPlank(
   for (let i = 0; i < stripsNeeded; i++) {
     const piecesInThisStrip = Math.min(piecesPerStrip, remainingPieces);
     const totalCutLength = piecesInThisStrip * part.length;
+    const kerfLoss = kerf * Math.max(0, piecesInThisStrip - 1);
+    const spareLength = plankLength - totalCutLength - kerfLoss;
 
     strips.push({
       ripLabel: `rip to ${part.width}"`,
       cuts: [
         { length: part.length, label: part.symbol, count: piecesInThisStrip },
-        { length: plankLength - totalCutLength, label: 'spare', spare: true },
+        { length: spareLength, label: 'spare', spare: true },
       ],
     });
 

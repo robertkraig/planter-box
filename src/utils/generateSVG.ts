@@ -15,12 +15,13 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
   const scale = 5; // SVG scale factor (pixels per inch)
 
   // Calculate dimensions
-  const panelWidth = parts.sidePanel.length * scale;
-  const panelHeight = parts.sidePanel.width * scale * 0.7; // Slightly compressed for visual
+  const panelWidth = parts.sidePanelLength.length * scale;
+  const panelHeight = parts.sidePanelLength.width * scale * 0.7; // Slightly compressed for visual
   const legWidth = box.legWidth * scale;
   const legHeight = box.height * scale;
-  const rimHeight = parts.topRim?.width * scale || 10;
-  const rimLength = parts.topRim?.length * scale || panelWidth;
+  const rimHeight = parts.topRimLength?.width * scale || 10;
+  const rimLengthSide = parts.topRimLength?.length * scale || panelWidth;
+  const rimWidthSide = parts.topRimWidth?.length * scale || panelWidth;
 
   // Side panel dimensions (compressed width for side view)
   const sidePanelWidth = box.interiorWidth * scale * 0.5;
@@ -32,7 +33,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
 
   return {
     width: 700,
-    height: 240,
+    height: 340,
     sections: [
       // FRONT PANEL ASSEMBLY
       {
@@ -71,13 +72,13 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             strokeWidth: 2,
           },
           // Top rim (if exists)
-          ...(parts.topRim
+          ...(parts.topRimLength
             ? [
                 {
                   type: 'rect',
                   x: 60 - legWidth / 2,
                   y: 50 - 5 - rimHeight,
-                  width: rimLength,
+                  width: rimLengthSide,
                   height: rimHeight,
                   fill: '#ffe6ba',
                   stroke: '#b1976e',
@@ -104,7 +105,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontWeight: 'bold',
             content: '②',
           },
-          ...(parts.topRim
+          ...(parts.topRimLength
             ? [
                 {
                   type: 'text',
@@ -165,7 +166,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             strokeWidth: 2,
           },
           // Top rim (if exists)
-          ...(parts.topRim
+          ...(parts.topRimWidth
             ? [
                 {
                   type: 'rect',
@@ -198,7 +199,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontWeight: 'bold',
             content: '②',
           },
-          ...(parts.topRim
+          ...(parts.topRimWidth
             ? [
                 {
                   type: 'text',
@@ -207,7 +208,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
                   fontSize: 17,
                   fill: '#7d5a3a',
                   fontWeight: 'bold',
-                  content: '④',
+                  content: '⑤',
                 },
               ]
             : []),
@@ -268,6 +269,95 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
           },
         ],
       },
+
+      // TOP RIM CORNER ASSEMBLY (showing how ④ and ⑤ meet)
+      ...(parts.topRimLength && parts.topRimWidth
+        ? [
+            {
+              elements: [
+                // Title
+                {
+                  type: 'text',
+                  x: 70,
+                  y: 200,
+                  fontSize: 14,
+                  fill: '#444',
+                  content: 'Top Rim Corner (Top View)',
+                },
+                // Length side rim (④) - horizontal
+                {
+                  type: 'rect',
+                  x: 60,
+                  y: 220,
+                  width: rimLengthSide * 0.6,
+                  height: rimHeight,
+                  fill: '#ffe6ba',
+                  stroke: '#b1976e',
+                  strokeWidth: 2,
+                },
+                // Width side rim (⑤) - vertical
+                {
+                  type: 'rect',
+                  x: 60,
+                  y: 220,
+                  width: rimHeight,
+                  height: rimWidthSide * 0.6,
+                  fill: '#ffd89a',
+                  stroke: '#b1976e',
+                  strokeWidth: 2,
+                },
+                // Corner overlap indicator (darker)
+                {
+                  type: 'rect',
+                  x: 60,
+                  y: 220,
+                  width: rimHeight,
+                  height: rimHeight,
+                  fill: '#d4a574',
+                  stroke: '#8b6f47',
+                  strokeWidth: 2,
+                },
+                // Label for length side
+                {
+                  type: 'text',
+                  x: 60 + rimLengthSide * 0.3,
+                  y: 220 + rimHeight / 2 + 5,
+                  fontSize: 17,
+                  fill: '#7d5a3a',
+                  fontWeight: 'bold',
+                  content: '④',
+                },
+                // Label for width side
+                {
+                  type: 'text',
+                  x: 60 + rimHeight / 2 - 4,
+                  y: 220 + rimWidthSide * 0.3,
+                  fontSize: 17,
+                  fill: '#7d5a3a',
+                  fontWeight: 'bold',
+                  content: '⑤',
+                },
+                // Dimension arrows and text
+                {
+                  type: 'text',
+                  x: 60 + rimLengthSide * 0.6 + 10,
+                  y: 220 + rimHeight / 2 + 5,
+                  fontSize: 11,
+                  fill: '#666',
+                  content: `${parts.topRimLength.length}"`,
+                },
+                {
+                  type: 'text',
+                  x: 60 + rimHeight + 5,
+                  y: 220 + rimWidthSide * 0.6 + 15,
+                  fontSize: 11,
+                  fill: '#666',
+                  content: `${parts.topRimWidth.length}"`,
+                },
+              ],
+            },
+          ]
+        : []),
     ],
   };
 }

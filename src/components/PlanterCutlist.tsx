@@ -16,16 +16,16 @@ export function PlanterCutlist({ config }: PlanterCutlistProps) {
           {config.plankLength}" × {config.plankWidth}")
         </h2>
 
+        <Legend legend={config.legend} plankLength={config.plankLength} />
+
         {config.planks.map((plank, idx) => (
           <Plank
             key={idx}
             plank={plank}
             plankLength={config.plankLength}
-            scale={config.scale}
           />
         ))}
 
-        <Legend legend={config.legend} plankLength={config.plankLength} />
       </div>
 
       <AssemblyDiagram svg={config.svg} />

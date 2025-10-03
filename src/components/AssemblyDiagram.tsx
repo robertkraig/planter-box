@@ -9,6 +9,7 @@ export function AssemblyDiagram({ svg }: AssemblyDiagramProps) {
 
   return (
     <div
+      className="assembly-diagram"
       style={{
         width: '800px',
         marginLeft: 'auto',
@@ -16,6 +17,9 @@ export function AssemblyDiagram({ svg }: AssemblyDiagramProps) {
         marginTop: '30px',
       }}
     >
+      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
+        Assembly Diagram
+      </h2>
       <svg
         width={svg.width || 700}
         height={svg.height || 340}

@@ -3,6 +3,7 @@ export interface BoxConfig {
   interiorWidth: number;
   height: number;
   legWidth: number;
+  legGap: number; // Gap below box (adds to leg length for elevation)
   hasTopRim: boolean;
   topRimWidth: number;
   bottomSlats?: number; // Optional - will be auto-calculated if not provided
@@ -20,7 +21,6 @@ export interface PlanterConfig {
   plankWidth: number;
   plankThickness: number;
   kerf: number;
-  scale: number;
   box: BoxConfig;
   sparePlanks: number;
 }
@@ -33,10 +33,12 @@ export interface Part {
 }
 
 export interface Parts {
-  sidePanel: Part;
+  sidePanelLength: Part;
+  sidePanelWidth: Part;
   leg: Part;
   bottomSlat: Part;
-  topRim?: Part;
+  topRimLength?: Part;
+  topRimWidth?: Part;
 }
 
 export interface Cut {

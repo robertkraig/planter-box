@@ -1,11 +1,13 @@
 import type { Plank } from '../types';
+import {formatFraction} from "../utils/formatFraction.ts";
 
 interface RippedPlankProps {
   plank: Plank;
   plankLength: number;
+  scale: number;
 }
 
-export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
+export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
   if (!plank.strips || plank.strips.length === 0 || !plankLength || plankLength <= 0) {
     return null;
   }
@@ -41,7 +43,7 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
               const count = cut.count || 1;
 
               return Array.from({ length: count }, (_, i) => {
-                const cutWidth = (cut.length / plankLength) * 100;
+                const cutWidth = cut.length * scale;
                 // Don't show right border between cuts of the same type, only between different cut types
                 const isLastOfType = i === count - 1;
                 const showBorder = !isLastOfType && !cut.spare;
@@ -53,7 +55,7 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
                     key={`${cutIdx}-${i}`}
                     className={cssClass}
                     style={{
-                      width: `${cutWidth}%`,
+                      width: `${cutWidth}px`,
                       height: '100%',
                       borderBottom: 'none',
                       borderRight: showBorder ? '2px dashed #b14416' : 'none',
@@ -73,8 +75,9 @@ export function RippedPlank({ plank, plankLength }: RippedPlankProps) {
                         {strip.ripLabel}
                       </span>
                     )}
-                    {labelText}
-                    <span>{cut.length}"</span>
+                    <strong>{labelText}</strong>
+                      <span dangerouslySetInnerHTML={{__html: formatFraction(cut.length)}}></span>
+
                   </div>
                 );
               });

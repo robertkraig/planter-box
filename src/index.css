@@ -5,12 +5,11 @@ body {
 }
 
 .cutlist-container {
-  width: 900px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #fff8e1;
-  border-radius: 14px;
-  box-shadow: 0 3px 18px #ded2b180;
+  margin: 0 auto;
+  padding: 0;
+  /*background: #fff8e1;*/
+  /*border-radius: 14px;*/
+  /*box-shadow: 0 3px 18px #ded2b180;*/
 }
 
 .plank-row {
@@ -54,6 +53,24 @@ body {
   box-sizing: border-box;
 }
 
+.cut strong {
+  padding-right: 5px;
+}
+
+.frac {
+    font-size: 12px;
+    display: inline-block !important;
+}
+
+.frac .entity {
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.frac sup, .frac sub {
+    font-size: 8px;
+}
+
 .cut:last-child {
   border-right: none;
 }
@@ -80,15 +97,16 @@ body {
 
 .legend {
   margin-top: 20px;
-  padding: 10px 16px;
-  background: #fff4d1;
-  border-radius: 8px;
-  border: 1.5px solid #e2c184;
+    margin-bottom: 20px;
+  padding: 0;
+  /*background: #fff4d1;*/
+  /*border-radius: 8px;*/
+  /*border: 1.5px solid #e2c184;*/
   font-size: 15px;
 }
 
 .cut span {
-  display: block;
+  display: inline-block;
   margin-top: 2px;
   color: #876b36;
   font-size: 12px;
@@ -101,4 +119,178 @@ body {
   font-size: 11px;
   text-align: center;
   font-style: italic;
+}
+
+/* Config Form Styles */
+.config-form-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 350px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.config-form-toggle {
+  width: 100%;
+  padding: 12px;
+  background: #b48943;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-form-toggle.open {
+  border-radius: 8px 8px 0 0;
+}
+
+.config-form-toggle.closed {
+  border-radius: 8px;
+}
+
+.config-form-content {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+  border-top: 1px solid #e2c184;
+}
+
+.config-form-section {
+  margin-left: 0;
+  margin-bottom: 15px;
+}
+
+.config-form-section-title {
+  color: #b48943;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.config-form-field {
+  margin-bottom: 12px;
+}
+
+.config-form-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+.config-form-label-value {
+  color: #888;
+  font-weight: normal;
+}
+
+.config-form-input,
+.config-form-select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.config-form-number-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.config-form-number-group .config-form-input:first-child {
+  width: 60%;
+}
+
+.config-form-number-group .config-form-input:last-child {
+  width: 35%;
+}
+
+.config-form-number-group span {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Print styles */
+@media print {
+  /* Hide the config form when printing */
+  .config-form-container {
+    display: none !important;
+  }
+
+  /* Reset background colors for better printing */
+  body {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cutlist-container {
+    margin: 0;
+    padding: 0.5in;
+    background: white;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Scale down plank visualization to fit on printed page */
+  .plank {
+    width: 100%;
+    max-width: 6.5in;
+  }
+
+  /* Ensure plank rows don't break across pages */
+  .plank-row {
+    page-break-inside: avoid;
+    margin-bottom: 10px;
+  }
+
+  /* Make text darker for better print quality */
+  .plank-label {
+    color: #000;
+  }
+
+  .cut {
+    color: #000;
+  }
+
+  .legend {
+    page-break-inside: avoid;
+    margin-top: 0.5in;
+    margin-bottom: 0.5in;
+  }
+
+  /* Adjust plank visualization for print */
+  .plank {
+    border-color: #000;
+  }
+
+  .cut {
+    border-right-color: #666;
+  }
+
+  /* Assembly diagram styles */
+  .assembly-diagram {
+    page-break-before: always;
+    padding: 0.5in;
+  }
+
+  /* Ensure SVG prints properly */
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Add title to pages */
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.25in;
+  }
 }

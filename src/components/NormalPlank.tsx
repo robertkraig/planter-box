@@ -1,4 +1,5 @@
 import type { Plank } from '../types';
+import {formatFraction} from "../utils/formatFraction.ts";
 
 interface NormalPlankProps {
   plank: Plank;
@@ -27,9 +28,8 @@ export function NormalPlank({ plank, scale }: NormalPlankProps) {
               className={cssClass}
               style={{ width: `${width}px` }}
             >
-              {labelText}
-              <br />
-              <span>{cut.length}"</span>
+              <strong>{labelText}</strong>
+                <span dangerouslySetInnerHTML={{__html: formatFraction(cut.length)}}></span>
             </div>
           ));
         })}
