@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ExpandedConfig, PlanterConfig } from '../types';
 import { formatFraction } from '../utils/formatFraction';
 
 interface ConfigFormProps {
   config: ExpandedConfig;
   onConfigChange: (config: PlanterConfig) => void;
+  onPendingChange: (hasPending: boolean) => void;
 }
 
-export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
+export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFormProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [draftConfig, setDraftConfig] = useState<PlanterConfig>(config);
+
+  // Update draft when config changes (e.g., on submit)
+  useEffect(() => {
+    setDraftConfig(config);
+  }, [config]);
 
   const handleChange = (path: string, value: string) => {
-    const newConfig = { ...config };
+    const newConfig = { ...draftConfig };
     const keys = path.split('.');
-    let current = newConfig;
+    let current = newConfig as any;
 
     for (let i = 0; i < keys.length - 1; i++) {
       current = current[keys[i]];
@@ -28,21 +35,24 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
       // Only update if we have a valid positive number
       if (!isNaN(numValue) && numValue > 0) {
         current[lastKey] = numValue;
-        onConfigChange(newConfig);
+        setDraftConfig(newConfig);
+        onPendingChange(true);
       }
     } else if (typeof currentValue === 'boolean') {
       current[lastKey] = value === 'true';
-      onConfigChange(newConfig);
+      setDraftConfig(newConfig);
+      onPendingChange(true);
     } else {
       current[lastKey] = value;
-      onConfigChange(newConfig);
+      setDraftConfig(newConfig);
+      onPendingChange(true);
     }
   };
 
   const handleFractionChange = (path: string, whole: string, fraction: string) => {
-    const newConfig = { ...config };
+    const newConfig = { ...draftConfig };
     const keys = path.split('.');
-    let current = newConfig;
+    let current = newConfig as any;
 
     for (let i = 0; i < keys.length - 1; i++) {
       current = current[keys[i]];
@@ -55,11 +65,51 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
 
     if (total > 0) {
       current[lastKey] = total;
-      onConfigChange(newConfig);
+      setDraftConfig(newConfig);
+      onPendingChange(true);
     }
   };
 
-  const renderInput = (key, value, path) => {
+  const handleSubmit = () => {
+    onConfigChange(draftConfig);
+    // Close the sidebar after 1 second
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    setDraftConfig(config);
+    onPendingChange(false);
+  };
+
+  const handleShare = () => {
+    // Use the applied config (not draft), excluding computed values
+    const configToShare: Partial<PlanterConfig> = {
+      title: config.title,
+      plankLength: config.plankLength,
+      plankWidth: config.plankWidth,
+      plankThickness: config.plankThickness,
+      kerf: config.kerf,
+      box: config.box,
+      sparePlanks: config.sparePlanks,
+    };
+
+    const params = new URLSearchParams();
+    params.set('config', btoa(JSON.stringify(configToShare)));
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard!');
+    }).catch(() => {
+      // Fallback: show the URL in a prompt
+      prompt('Share this URL:', shareUrl);
+    });
+  };
+
+  const renderInput = (key: string, value: any, path: string) => {
     if (typeof value === 'object' && !Array.isArray(value)) {
       return (
         <div key={path} className="config-form-section">
@@ -157,18 +207,33 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
   };
 
   return (
-    <div className="config-form-container">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`config-form-toggle ${isOpen ? 'open' : 'closed'}`}
-      >
-        <span>⚙️ Configure Planter Box</span>
-        <span>{isOpen ? '▼' : '▶'}</span>
-      </button>
+    <div className={`config-form-container ${isOpen ? 'open' : ''}`}>
+      <div className="config-form-nav-bar">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="config-form-nav-btn"
+          aria-label="Toggle configuration panel"
+          title="Settings"
+        >
+          <span>{isOpen ? '◀' : '⚙️'}</span>
+        </button>
+        <button
+          onClick={handleShare}
+          className="config-form-nav-btn"
+          aria-label="Share configuration"
+          title="Share Configuration"
+        >
+          <span>🔗</span>
+        </button>
+      </div>
 
-      {isOpen && (
+      <div className="config-form-sidebar">
+        <div className="config-form-header">
+          <h3>Configure Planter Box</h3>
+        </div>
+
         <div className="config-form-content">
-          {Object.entries(config).map(([key, value]) => {
+          {Object.entries(draftConfig).map(([key, value]) => {
             // Skip computed/complex values
             if (
               key === 'parts' ||
@@ -184,7 +249,16 @@ export function ConfigForm({ config, onConfigChange }: ConfigFormProps) {
             return renderInput(key, value, key);
           })}
         </div>
-      )}
+
+        <div className="config-form-actions">
+          <button onClick={handleCancel} className="config-form-btn-cancel">
+            Cancel
+          </button>
+          <button onClick={handleSubmit} className="config-form-btn-submit">
+            Apply Changes
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

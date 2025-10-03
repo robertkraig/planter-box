@@ -5,12 +5,13 @@ import type { ExpandedConfig } from '../types';
 
 interface PlanterCutlistProps {
   config: ExpandedConfig;
+  hasPendingChanges: boolean;
 }
 
-export function PlanterCutlist({ config }: PlanterCutlistProps) {
+export function PlanterCutlist({ config, hasPendingChanges }: PlanterCutlistProps) {
   return (
     <>
-      <div className="cutlist-container">
+      <div className={`cutlist-container ${hasPendingChanges ? 'pending-changes' : ''}`}>
         <h2>
           {config.title} Cutlist ({config.totalPlanks} Planks @{' '}
           {config.plankLength}" × {config.plankWidth}")
@@ -26,9 +27,13 @@ export function PlanterCutlist({ config }: PlanterCutlistProps) {
           />
         ))}
 
+        {hasPendingChanges && <div className="cutlist-overlay" />}
       </div>
 
-      <AssemblyDiagram svg={config.svg} />
+      <div className={`assembly-diagram-container ${hasPendingChanges ? 'pending-changes' : ''}`}>
+        <AssemblyDiagram svg={config.svg} />
+        {hasPendingChanges && <div className="cutlist-overlay" />}
+      </div>
     </>
   );
 }

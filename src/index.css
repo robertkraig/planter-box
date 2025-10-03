@@ -2,14 +2,38 @@ body {
   font-family: sans-serif;
   background: #f9f6f1;
   color: #353535;
+  margin: 0;
+  padding: 0;
 }
 
 .cutlist-container {
   margin: 0 auto;
   padding: 0;
+  position: relative;
   /*background: #fff8e1;*/
   /*border-radius: 14px;*/
   /*box-shadow: 0 3px 18px #ded2b180;*/
+}
+
+.cutlist-container.pending-changes,
+.assembly-diagram-container.pending-changes {
+  position: relative;
+}
+
+.cutlist-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(1px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.assembly-diagram-container {
+  position: relative;
 }
 
 .plank-row {
@@ -121,45 +145,137 @@ body {
   font-style: italic;
 }
 
-/* Config Form Styles */
+/* Config Form Styles - Permanent Nav Bar + Slide-out Panel */
 .config-form-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 350px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
 }
 
-.config-form-toggle {
-  width: 100%;
-  padding: 12px;
+.config-form-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 100vh;
   background: #b48943;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  z-index: 101;
+}
+
+.config-form-nav-btn {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  margin-bottom: 10px;
+}
+
+.config-form-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.config-form-sidebar {
+  position: fixed;
+  top: 0;
+  left: -350px;
+  width: 350px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease-in-out;
+  z-index: 100;
+}
+
+.config-form-container.open .config-form-sidebar {
+  left: 60px;
+}
+
+.config-form-header {
+  padding: 20px;
+  background: #8b7138;
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
-.config-form-toggle.open {
-  border-radius: 8px 8px 0 0;
-}
-
-.config-form-toggle.closed {
-  border-radius: 8px;
+.config-form-header h3 {
+  margin: 0;
+  font-size: 18px;
 }
 
 .config-form-content {
   padding: 20px;
-  max-height: 70vh;
+  flex: 1;
   overflow-y: auto;
+}
+
+/* Main content shifts to the right when sidebar is open */
+.main-content {
+  margin-left: 60px;
+  transition: margin-left 0.3s ease-in-out;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.config-form-container.open ~ .main-content {
+  margin-left: 410px; /* 60px nav bar + 350px sidebar */
+}
+
+.config-form-actions {
+  padding: 20px;
   border-top: 1px solid #e2c184;
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.config-form-btn-submit,
+.config-form-btn-cancel {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.config-form-btn-submit {
+  background: #b48943;
+  color: white;
+}
+
+.config-form-btn-submit:hover {
+  background: #9a7338;
+}
+
+.config-form-btn-cancel {
+  background: #e0e0e0;
+  color: #555;
+}
+
+.config-form-btn-cancel:hover {
+  background: #d0d0d0;
 }
 
 .config-form-section {
@@ -221,7 +337,11 @@ body {
 /* Print styles */
 @media print {
   /* Hide the config form when printing */
-  .config-form-container {
+  .config-form-container,
+  .config-form-toggle-btn,
+  .config-form-sidebar,
+  .config-form-overlay,
+  .cutlist-overlay {
     display: none !important;
   }
 
@@ -230,6 +350,11 @@ body {
     background: white;
     margin: 0;
     padding: 0;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
   }
 
   .cutlist-container {
