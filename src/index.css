@@ -362,6 +362,21 @@ body {
   font-size: 14px;
 }
 
+/* Mobile: Fix action buttons at bottom when sidebar is open */
+@media (max-width: 768px) {
+  .config-form-container.open .config-form-actions {
+    position: static;
+    bottom: 0;
+    left: 60px;
+    background: #fff;
+    z-index: 101;
+  }
+
+  .config-form-container.open .config-form-content {
+    padding-bottom: 10px; /* Space for fixed buttons */
+  }
+}
+
 /* Print styles */
 @media print {
   /* Hide the config form when printing */
