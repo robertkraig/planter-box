@@ -103,7 +103,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontSize: 19,
             fill: '#7d5a3a',
             fontWeight: 'bold',
-            content: '②',
+            content: '③',
           },
           ...(parts.topRimLength
             ? [
@@ -114,7 +114,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
                   fontSize: 17,
                   fill: '#7d5a3a',
                   fontWeight: 'bold',
-                  content: '④',
+                  content: '⑤',
                 },
               ]
             : []),
@@ -188,7 +188,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontSize: 19,
             fill: '#7d5a3a',
             fontWeight: 'bold',
-            content: '①',
+            content: '②',
           },
           {
             type: 'text',
@@ -197,7 +197,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontSize: 19,
             fill: '#7d5a3a',
             fontWeight: 'bold',
-            content: '②',
+            content: '③',
           },
           ...(parts.topRimWidth
             ? [
@@ -208,7 +208,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
                   fontSize: 17,
                   fill: '#7d5a3a',
                   fontWeight: 'bold',
-                  content: '⑤',
+                  content: '⑥',
                 },
               ]
             : []),
@@ -257,7 +257,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
             fontSize: 19,
             fill: '#7d5a3a',
             fontWeight: 'bold',
-            content: '③',
+            content: '④',
           },
           {
             type: 'text',
@@ -325,7 +325,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
                   fontSize: 17,
                   fill: '#7d5a3a',
                   fontWeight: 'bold',
-                  content: '④',
+                  content: '⑤',
                 },
                 // Label for width side
                 {
@@ -335,7 +335,7 @@ export function generateAssemblyDiagram(config: DiagramConfig): SVGDiagram {
                   fontSize: 17,
                   fill: '#7d5a3a',
                   fontWeight: 'bold',
-                  content: '⑤',
+                  content: '⑥',
                 },
                 // Dimension arrows and text
                 {

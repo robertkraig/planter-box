@@ -58,32 +58,32 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
         length: sidePanelWidthDim,
         width: plankWidth,
         count: sidePanelWidthCount,
-        symbol: '①',
+        symbol: '②',
       },
       leg: {
         length: legHeight,
         width: box.legWidth,
         count: legCount,
-        symbol: '②',
+        symbol: '③',
       },
       bottomSlat: {
         length: bottomSlatLength,
         width: plankWidth,
         count: bottomSlatCount,
-        symbol: '③',
+        symbol: '④',
       },
       ...(box.hasTopRim && {
         topRimLength: {
           length: topRimLengthSide,
           width: box.topRimWidth,
           count: 2,
-          symbol: '④',
+          symbol: '⑤',
         },
         topRimWidth: {
           length: topRimWidthSide,
           width: box.topRimWidth,
           count: 2,
-          symbol: '⑤',
+          symbol: '⑥',
         },
       }),
     };
