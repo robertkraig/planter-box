@@ -1,5 +1,5 @@
 import type { Plank } from '../types';
-import {formatFraction} from "../utils/formatFraction.ts";
+import { formatFraction } from '../utils/formatFraction.ts';
 
 interface NormalPlankProps {
   plank: Plank;
@@ -13,7 +13,7 @@ export function NormalPlank({ plank, scale }: NormalPlankProps) {
       <div className="plank" style={{ position: 'relative' }}>
         {plank.ripWidth && (
           <span className="rip-label" style={{ right: '6px', top: '2px' }}>
-            rip to {plank.ripWidth}"
+            rip to {plank.ripWidth}&quot;
           </span>
         )}
         {(plank.cuts ?? []).map((cut, cutIdx) => {
@@ -29,7 +29,9 @@ export function NormalPlank({ plank, scale }: NormalPlankProps) {
               style={{ width: `${width}px` }}
             >
               <strong>{labelText}</strong>
-                <span dangerouslySetInnerHTML={{__html: formatFraction(cut.length)}}></span>
+              <span
+                dangerouslySetInnerHTML={{ __html: formatFraction(cut.length) }}
+              ></span>
             </div>
           ));
         })}

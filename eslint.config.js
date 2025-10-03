@@ -10,7 +10,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   prettierConfig,
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['./src/**/*.{ts,tsx}'],
     plugins: {
       react,
       'react-hooks': reactHooks,

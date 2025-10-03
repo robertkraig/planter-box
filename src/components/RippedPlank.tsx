@@ -1,5 +1,5 @@
 import type { Plank } from '../types';
-import {formatFraction} from "../utils/formatFraction.ts";
+import { formatFraction } from '../utils/formatFraction.ts';
 
 interface RippedPlankProps {
   plank: Plank;
@@ -8,7 +8,12 @@ interface RippedPlankProps {
 }
 
 export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
-  if (!plank.strips || plank.strips.length === 0 || !plankLength || plankLength <= 0) {
+  if (
+    !plank.strips ||
+    plank.strips.length === 0 ||
+    !plankLength ||
+    plankLength <= 0
+  ) {
     return null;
   }
 
@@ -22,7 +27,7 @@ export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
         className="plank"
         style={{ height: `${plankHeight}px`, flexDirection: 'column' }}
       >
-        {plank.strips.map((strip, idx) => (
+        {plank.strips.map((strip, idx, values) => (
           <div
             key={idx}
             className="rip-half"
@@ -33,13 +38,12 @@ export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
               height: stripHeight,
               position: 'relative',
               borderBottom:
-                idx < plank.strips.length - 1 ? '2px dotted #b14416' : 'none',
+                idx < values.length - 1 ? '2px dotted #b14416' : 'none',
             }}
           >
             {strip.cuts.map((cut, cutIdx) => {
               const cssClass = cut.spare ? 'cut spare' : 'cut';
               const labelText = cut.spare ? 'spare' : cut.label;
-              const isLastCut = cutIdx === strip.cuts.length - 1;
               const count = cut.count || 1;
 
               return Array.from({ length: count }, (_, i) => {
@@ -76,8 +80,11 @@ export function RippedPlank({ plank, plankLength, scale }: RippedPlankProps) {
                       </span>
                     )}
                     <strong>{labelText}</strong>
-                      <span dangerouslySetInnerHTML={{__html: formatFraction(cut.length)}}></span>
-
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: formatFraction(cut.length),
+                      }}
+                    ></span>
                   </div>
                 );
               });

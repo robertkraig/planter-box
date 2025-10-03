@@ -8,7 +8,11 @@ interface ConfigFormProps {
   onPendingChange: (hasPending: boolean) => void;
 }
 
-export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFormProps) {
+export function ConfigForm({
+  config,
+  onConfigChange,
+  onPendingChange,
+}: ConfigFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [draftConfig, setDraftConfig] = useState<PlanterConfig>(config);
 
@@ -17,56 +21,59 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
     setDraftConfig(config);
   }, [config]);
 
-  const handleChange = (path: string, value: string) => {
+  // Helper to update a nested config value by path
+  const updateConfigValue = (path: string, value: any) => {
     const newConfig = { ...draftConfig };
     const keys = path.split('.');
     let current = newConfig as any;
 
+    // Navigate to the nested property
     for (let i = 0; i < keys.length - 1; i++) {
       current = current[keys[i]];
     }
 
+    // Update the value
     const lastKey = keys[keys.length - 1];
-    const currentValue = current[lastKey];
+    current[lastKey] = value;
 
-    // Convert to appropriate type
-    if (typeof currentValue === 'number') {
-      const numValue = parseFloat(value);
-      // Only update if we have a valid positive number
-      if (!isNaN(numValue) && numValue > 0) {
-        current[lastKey] = numValue;
-        setDraftConfig(newConfig);
-        onPendingChange(true);
-      }
-    } else if (typeof currentValue === 'boolean') {
-      current[lastKey] = value === 'true';
-      setDraftConfig(newConfig);
-      onPendingChange(true);
-    } else {
-      current[lastKey] = value;
-      setDraftConfig(newConfig);
-      onPendingChange(true);
-    }
+    // Apply changes
+    setDraftConfig(newConfig);
+    onPendingChange(true);
   };
 
-  const handleFractionChange = (path: string, whole: string, fraction: string) => {
-    const newConfig = { ...draftConfig };
+  const handleChange = (path: string, value: string) => {
     const keys = path.split('.');
-    let current = newConfig as any;
-
+    let current = draftConfig as any;
     for (let i = 0; i < keys.length - 1; i++) {
       current = current[keys[i]];
     }
+    const currentValue = current[keys[keys.length - 1]];
 
-    const lastKey = keys[keys.length - 1];
+    // Convert value based on current type
+    let convertedValue: any = value;
+
+    if (typeof currentValue === 'number') {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue <= 0) return; // Invalid number
+      convertedValue = numValue;
+    } else if (typeof currentValue === 'boolean') {
+      convertedValue = value === 'true';
+    }
+
+    updateConfigValue(path, convertedValue);
+  };
+
+  const handleFractionChange = (
+    path: string,
+    whole: string,
+    fraction: string
+  ) => {
     const wholeNum = parseInt(whole) || 0;
     const fracNum = parseFloat(fraction) || 0;
     const total = wholeNum + fracNum;
 
     if (total > 0) {
-      current[lastKey] = total;
-      setDraftConfig(newConfig);
-      onPendingChange(true);
+      updateConfigValue(path, total);
     }
   };
 
@@ -101,12 +108,15 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
     const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 
     // Copy to clipboard
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Share link copied to clipboard!');
-    }).catch(() => {
-      // Fallback: show the URL in a prompt
-      prompt('Share this URL:', shareUrl);
-    });
+    navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => {
+        alert('Share link copied to clipboard!');
+      })
+      .catch(() => {
+        // Fallback: show the URL in a prompt
+        prompt('Share this URL:', shareUrl);
+      });
   };
 
   const renderInput = (key: string, value: any, path: string) => {
@@ -132,7 +142,13 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
           {label}:{' '}
           {typeof value === 'number' && (
             <span className="config-form-label-value">
-              ({<span dangerouslySetInnerHTML={{__html: formatFraction(value)}}></span>})
+              (
+              {
+                <span
+                  dangerouslySetInnerHTML={{ __html: formatFraction(value) }}
+                ></span>
+              }
+              )
             </span>
           )}
         </label>
@@ -146,8 +162,8 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>
-         ) : typeof value === 'number' ? (
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        ) : typeof value === 'number' ? (
+          <div className="config-form-number-input-group">
             <input
               id={inputId}
               type="number"
@@ -158,18 +174,14 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
                 const fraction = (value - Math.floor(value)).toFixed(3);
                 handleFractionChange(path, whole, fraction);
               }}
-              style={{
-                width: '60%',
-                padding: '8px',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                fontSize: '14px',
-              }}
+              className="config-form-number-input-whole"
             />
-            <span style={{ fontSize: '14px', color: '#555' }}>"</span>
+            <span className="config-form-inch-mark">&quot;</span>
             <input
               type="number"
-              value={((value - Math.floor(value)) * 1).toFixed(3).replace(/\.?0+$/, '')}
+              value={((value - Math.floor(value)) * 1)
+                .toFixed(3)
+                .replace(/\.?0+$/, '')}
               min="0"
               max="0.99"
               step="0.125"
@@ -178,13 +190,7 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
                 const fraction = e.target.value;
                 handleFractionChange(path, whole, fraction);
               }}
-              style={{
-                width: '35%',
-                padding: '8px',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                fontSize: '14px',
-              }}
+              className="config-form-number-input-fraction"
             />
           </div>
         ) : (
@@ -193,13 +199,7 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
             type="text"
             value={value}
             onChange={(e) => handleChange(path, e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '14px',
-            }}
+            className="config-form-input"
           />
         )}
       </div>
@@ -234,16 +234,16 @@ export function ConfigForm({ config, onConfigChange, onPendingChange }: ConfigFo
 
         <div className="config-form-content">
           {Object.entries(draftConfig).map(([key, value]) => {
-            // Skip computed/complex values
-            if (
-              key === 'parts' ||
-              key === 'cutPatterns' ||
-              key === 'planks' ||
-              key === 'legend' ||
-              key === 'totalPlanks' ||
-              key === 'svg' ||
-              key === 'sparePlanks'
-            ) {
+            // Skip computed/complex values (only computed values, not user inputs)
+            const ignoreKeys = [
+              'parts',
+              'cutPatterns',
+              'planks',
+              'legend',
+              'totalPlanks',
+              'svg',
+            ];
+            if (ignoreKeys.some((k) => k === key)) {
               return null;
             }
             return renderInput(key, value, key);

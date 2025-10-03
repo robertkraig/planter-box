@@ -1,5 +1,5 @@
 import type { Plank } from '../types';
-import {formatFraction} from "../utils/formatFraction.ts";
+import { formatFraction } from '../utils/formatFraction.ts';
 
 interface MultiRipPlankProps {
   plank: Plank;
@@ -7,7 +7,7 @@ interface MultiRipPlankProps {
   scale: number;
 }
 
-export function MultiRipPlank({ plank, plankLength, scale }: MultiRipPlankProps) {
+export function MultiRipPlank({ plank, plankLength }: MultiRipPlankProps) {
   if (!plankLength || plankLength <= 0) {
     return null;
   }
@@ -31,7 +31,7 @@ export function MultiRipPlank({ plank, plankLength, scale }: MultiRipPlankProps)
               >
                 spare
                 <br />
-                <span>~{cut.length}"</span>
+                <span>~{cut.length}&quot;</span>
               </div>
             );
           }
@@ -53,7 +53,11 @@ export function MultiRipPlank({ plank, plankLength, scale }: MultiRipPlankProps)
                 <span className="rip-label">{cut.ripLabel}</span>
                 <div className="cut" style={{ width: '100%', height: '100%' }}>
                   <strong>{cut.label}</strong>
-                    <span dangerouslySetInnerHTML={{__html: formatFraction(cut.length)}}></span>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: formatFraction(cut.length),
+                    }}
+                  ></span>
                 </div>
               </div>
             );

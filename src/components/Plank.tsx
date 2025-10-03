@@ -20,9 +20,11 @@ export function Plank({ plank, plankLength }: PlankProps) {
     case 'normal':
       return <NormalPlank plank={plank} scale={scale} />;
     case 'ripped':
-      return <RippedPlank plank={plank} plankLength={plankLength} scale={scale} />;
+      return (
+        <RippedPlank plank={plank} plankLength={plankLength} scale={scale} />
+      );
     case 'multi-rip':
-      return <MultiRipPlank plank={plank} plankLength={plankLength} scale={scale} />;
+      return <MultiRipPlank plank={plank} plankLength={plankLength} />;
     default:
       return null;
   }

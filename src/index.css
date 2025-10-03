@@ -82,17 +82,18 @@ body {
 }
 
 .frac {
-    font-size: 12px;
-    display: inline-block !important;
+  font-size: 12px;
+  display: inline-block !important;
 }
 
 .frac .entity {
-    font-size: 14px;
-    line-height: 14px;
+  font-size: 14px;
+  line-height: 14px;
 }
 
-.frac sup, .frac sub {
-    font-size: 8px;
+.frac sup,
+.frac sub {
+  font-size: 8px;
 }
 
 .cut:last-child {
@@ -121,7 +122,7 @@ body {
 
 .legend {
   margin-top: 20px;
-    margin-bottom: 20px;
+  margin-bottom: 20px;
   padding: 0;
   /*background: #fff4d1;*/
   /*border-radius: 8px;*/
@@ -332,6 +333,33 @@ body {
 .config-form-number-group span {
   font-size: 14px;
   color: #555;
+}
+
+.config-form-number-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.config-form-number-input-whole {
+  width: 60%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.config-form-inch-mark {
+  font-size: 14px;
+  color: #555;
+}
+
+.config-form-number-input-fraction {
+  width: 35%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 /* Print styles */

@@ -44,7 +44,10 @@ export default function App() {
         onPendingChange={setHasPendingChanges}
       />
       <div className="main-content">
-        <PlanterCutlist config={planterConfig} hasPendingChanges={hasPendingChanges} />
+        <PlanterCutlist
+          config={planterConfig}
+          hasPendingChanges={hasPendingChanges}
+        />
       </div>
     </>
   );

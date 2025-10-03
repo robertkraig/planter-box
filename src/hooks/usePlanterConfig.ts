@@ -17,7 +17,7 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
       return config as ExpandedConfig;
     }
 
-    const { box, plankLength, plankWidth, kerf, sparePlanks } = config;
+    const { box, plankLength, plankWidth, kerf } = config;
 
     // Validate dimensions to prevent division by zero
     if (!plankLength || plankLength <= 0 || !plankWidth || plankWidth <= 0) {
@@ -31,7 +31,7 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     const sidePanelLengthDim = box.interiorLength;
     const sidePanelWidthDim = box.interiorWidth;
     const sidePanelLengthCount = panelRows * 2; // 2 length sides
-    const sidePanelWidthCount = panelRows * 2;  // 2 width sides
+    const sidePanelWidthCount = panelRows * 2; // 2 width sides
 
     const legHeight = box.height + box.legGap;
     const legCount = 8;
@@ -228,7 +228,13 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     );
 
     // Generate planks
-    const planks = generatePlanks(cutPatterns, parts, plankLength, plankWidth, kerf);
+    const planks = generatePlanks(
+      cutPatterns,
+      parts,
+      plankLength,
+      plankWidth,
+      kerf
+    );
 
     // Generate legend
     const legend = Object.entries(parts).map(([key, part]) => {
@@ -246,7 +252,8 @@ export function usePlanterConfig(config: PlanterConfig): ExpandedConfig {
     });
 
     // Calculate box volume
-    const volumeCubicInches = box.interiorLength * box.interiorWidth * box.height;
+    const volumeCubicInches =
+      box.interiorLength * box.interiorWidth * box.height;
     const volumeCubicFeet = volumeCubicInches / 1728;
     const volumeGallons = volumeCubicFeet * 7.48;
 
@@ -352,7 +359,9 @@ function createLegPlank(
   kerf: number
 ): Omit<Plank, 'label'> {
   // Calculate how many pieces fit on one strip lengthwise (accounting for kerf)
-  const piecesPerStrip = Math.floor((plankLength + kerf) / (part.length + kerf));
+  const piecesPerStrip = Math.floor(
+    (plankLength + kerf) / (part.length + kerf)
+  );
   const totalPieces = pattern.count ?? 0;
 
   // Calculate how many strips we need
@@ -392,7 +401,9 @@ function createTopRimPlank(
   kerf: number
 ): Omit<Plank, 'label'> {
   // Calculate how many pieces fit on one strip lengthwise (accounting for kerf)
-  const piecesPerStrip = Math.floor((plankLength + kerf) / (part.length + kerf));
+  const piecesPerStrip = Math.floor(
+    (plankLength + kerf) / (part.length + kerf)
+  );
   const totalPieces = pattern.count ?? 0;
 
   // Calculate how many strips we need (optimize to use fewer strips)
